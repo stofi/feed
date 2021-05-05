@@ -58,6 +58,14 @@ exports[`atom 1.0 should generate a valid feed 1`] = `
             <uri>https://example.com/reggiemiller</uri>
         </contributor>
         <published>2013-07-10T23:00:00.000Z</published>
+        <_item_extension_1>
+            <about>just an item extension example</about>
+            <dummy1>example</dummy1>
+        </_item_extension_1>
+        <_item_extension_2>
+            <about>just a second item extension example</about>
+            <dummy1>example</dummy1>
+        </_item_extension_2>
     </entry>
 </feed>"
 `;

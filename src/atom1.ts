@@ -1,7 +1,7 @@
 import * as convert from "xml-js";
 import { generator } from "./config";
 import { Feed } from "./feed";
-import { Author, Category, Item } from "./typings";
+import { Author, Category, Extension, Item } from "./typings";
 import { sanitize } from "./utils";
 
 /**
@@ -18,8 +18,8 @@ export default (ins: Feed) => {
       id: options.id,
       title: options.title,
       updated: options.updated ? options.updated.toISOString() : new Date().toISOString(),
-      generator: sanitize(options.generator || generator)
-    }
+      generator: sanitize(options.generator || generator),
+    },
   };
 
   if (options.author) {
@@ -93,7 +93,7 @@ export default (ins: Feed) => {
       title: { _attributes: { type: "html" }, _cdata: item.title },
       id: sanitize(item.id || item.link),
       link: [{ _attributes: { href: sanitize(item.link) } }],
-      updated: item.date.toISOString()
+      updated: item.date.toISOString(),
     };
 
     //
@@ -159,6 +159,11 @@ export default (ins: Feed) => {
     if (item.copyright) {
       entry.rights = item.copyright;
     }
+    if (item.extensions) {
+      item.extensions.map((e: Extension) => {
+        entry[e.name] = e.objects;
+      });
+    }
 
     base.feed.entry.push(entry);
   });
@@ -173,7 +178,7 @@ export default (ins: Feed) => {
 const formatAuthor = (author: Author) => {
   const { name, email, link } = author;
 
-  const out: { name?: string, email?: string, uri?: string } = { name };
+  const out: { name?: string; email?: string; uri?: string } = { name };
   if (email) {
     out.email = email;
   }

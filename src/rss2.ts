@@ -1,7 +1,7 @@
 import * as convert from "xml-js";
 import { generator } from "./config";
 import { Feed } from "./feed";
-import { Author, Category, Enclosure, Item } from "./typings";
+import { Author, Category, Enclosure, Extension, Item } from "./typings";
 import { sanitize } from "./utils";
 
 /**
@@ -51,7 +51,7 @@ export default (ins: Feed) => {
     base.rss.channel.image = {
       title: { _text: options.title },
       url: { _text: options.image },
-      link: { _text: sanitize(options.link) }
+      link: { _text: sanitize(options.link) },
     };
   }
 
@@ -104,8 +104,8 @@ export default (ins: Feed) => {
     base.rss.channel["atom:link"] = {
       _attributes: {
         href: sanitize(options.hub),
-        rel: "hub"
-      }
+        rel: "hub",
+      },
     };
   }
 
@@ -191,6 +191,11 @@ export default (ins: Feed) => {
 
     if (entry.video) {
       item.enclosure = formatEnclosure(entry.video, "video");
+    }
+    if (entry.extensions) {
+      entry.extensions.map((e: Extension) => {
+        item[e.name] = e.objects;
+      });
     }
 
     base.rss.channel.item.push(item);
